@@ -1,0 +1,2 @@
+This is a simple example. 
+Split this file to 10 fragments, and to be recovered with minimum 5 fragments.
