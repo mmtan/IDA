@@ -43,5 +43,9 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 Please make sure to update tests as appropriate.
 
+## Future work
+* Encrypt fragments for secret sharing. 
+* Optimize splitting process for large input files.
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
