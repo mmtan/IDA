@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="IDA_pkg", 
+    name="IDA-pkg", 
     version="0.0.1",
     author="mmtan",
     author_email="mmtan830@gmail.com",
