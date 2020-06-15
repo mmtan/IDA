@@ -16,7 +16,7 @@ pip install IDA-pkg
 ```
 
 ## Issues
-* Warning: currently only works with small files at the moment!
+* Warning: currently only works with small files!
 
 ## Examples
 The following is a simple example. That is, we split a file into 10 fragments such that any 5 of them are sufficient to recover the original data. 
