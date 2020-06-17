@@ -11,7 +11,7 @@ setuptools.setup(
     description="Python package for efficient dispersal of information that breaks a file of length N into n pieces, each of length N/m, so that every m pieces are sufficient to reconstruct the original file.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/pypa/sampleproject",
+    url = "https://github.com/mmtan/IDA",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
