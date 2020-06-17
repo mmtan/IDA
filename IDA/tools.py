@@ -47,7 +47,7 @@ def inner_product(a, b, p):
     result=0
     for i in range(len(a)): 
         result+=(a[i]*b[i])%p
-    return result
+    return (result)%p
         
 def matrix_product(A,B, p): 
     '''
