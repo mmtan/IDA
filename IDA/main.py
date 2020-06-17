@@ -1,10 +1,11 @@
 from IDA.tools import *
 from IDA.fragment import *
-
+import os
+import math
         
 def split(file, n, m): 
     """
-    Inputs:
+    Inputs: 
     file: name of the file to split
     n   : number of fragments after splitting the file
     m   : minimum number of fragments required to restore the file
@@ -14,29 +15,12 @@ def split(file, n, m):
 
     if m>n: 
         raise ValueError("numToAssemble must be less than numFragments")
-        
-    if n<=0 or m<=0: 
-        raise ValueError("parameters numFragments and numToAssemble must be positive ingeters")
-        
-    # convert file to byte strings
-    original_file=open(file, "rb").read()  
     
     # find the prime number greater than n
     # all computations are done modulo p
     p = 1021 if n<1021 else nextPrime(n)
     
-    # split original_file into chunks (subfiles) of length m 
-    original_subfiles=[list(original_file[i:i+m]) for i in range(0,len(original_file),m)]
-    
-    # for the last subfile, if the length is less than m, pad the subfile with zeros 
-    # to achieve final length of m
-    residue = len(original_file)%m
-    if residue:
-        
-        last_subfile=original_subfiles[-1]
-        last_subfile.extend([0]*(m-residue))
-    
-
+    # row i of building_blocks is (1,a_i, a_i**2, ..., a_i**(m-1))
     building_blocks=[]
     for a in range(1,n+1): 
         row = []
@@ -45,16 +29,28 @@ def split(file, n, m):
             row.append(elt)
             elt=(elt*a)%p
         building_blocks.append(row)
+        
+    # iteratively read segments of the file of size m
+    # build fragments column by column
+    # the entry of fragments at row i column j is the inner product of building_blocks[i] and 
+    # j-th segment of the original file
+    file_stats = os.stat(file)
+    original_file_len = file_stats.st_size
+    original_file=open(file, "rb")
+    fragment_len = math.ceil(original_file_len/m)
+    fragments_list=[[0]*fragment_len for _ in range(n)]
     
-    fragments=[]
-    for i in range(n): 
-        fragment = []
-        for k in range(len(original_subfiles)): 
-            fragment.append(inner_product(building_blocks[i], original_subfiles[k],p))
-        fragments.append(Fragment(i+1,fragment, n, m,p))
+    original_subfile=original_file.read(m)
+    col=0
+    while original_subfile: 
+        for row in range(n): 
+            fragments_list[row][col]=inner_product(original_subfile, building_blocks[row],p)
+        col+=1
+        original_subfile=original_file.read(m)
     
-    return fragments
-
+    return [Fragment(idx+1,fragments_list[idx],n,m,p) for idx in range(n)]
+    
+        
 def assemble(fragments, filename=None): 
     '''
     Input: 

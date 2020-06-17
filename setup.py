@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="IDA-pkg", 
-    version="0.0.1",
+    version="0.0.2",
     author="mmtan",
     author_email="mmtan830@gmail.com",
     description="Python package for efficient dispersal of information that breaks a file of length N into n pieces, each of length N/m, so that every m pieces are sufficient to reconstruct the original file.",
