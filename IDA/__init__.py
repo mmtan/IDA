@@ -1,1 +1,2 @@
-from IDA.main import split, assemble
+from IDA.split import split
+from IDA.assemble import assemble

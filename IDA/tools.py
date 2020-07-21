@@ -1,4 +1,5 @@
 import math
+import numpy
 
 def isPrime(p): 
     """
@@ -14,14 +15,14 @@ def isPrime(p):
         return True
     if p%2==0:
         return False
-    for d in range(2,math.ceil(math.sqrt(p))+1): 
+    for d in range(3,math.ceil(math.sqrt(p))+1): 
         if p%d==0: 
             return False
         
         else: 
             d+=2
     return True
-    
+
 def nextPrime(p): 
     '''
     Inputs: 
@@ -33,9 +34,9 @@ def nextPrime(p):
         p+=1
     while not isPrime(p):
         p+=2
-    return p    
+    return p
 
-def inner_product(a, b, p): 
+def inner_product_(a, b, p): 
     """
     Inputs:
     a, b :  v ectors of equal length
@@ -43,12 +44,8 @@ def inner_product(a, b, p):
     Output: 
     The inner product of a and b, where computations are done modulo p  
     """
+    return sum((i*j) for i,j in zip(a,b))%p
     
-    result=0
-    for i in range(len(a)): 
-        result+=(a[i]*b[i])%p
-    return (result)%p
-        
 def matrix_product(A,B, p): 
     '''
     Inputs: 
@@ -64,7 +61,7 @@ def matrix_product(A,B, p):
         for j in range(len(B[0])): 
             ans=0
             for k in range(len(A[0])):
-                ans=(ans+(A[i][k]*B[k][j])%p)%p
+                ans=(ans+(A[i][k]*B[k][j]))%p
             row.append(ans)
         result.append(row)
     return result
@@ -98,6 +95,25 @@ def modulo_inverse(x,p):
         t=t+p
     return t
     
+def build_building_blocks(m,n,p): 
+    '''
+    Inputs: 
+    m, n, p: integers
+    Output:
+    return building_blocks where
+    building_blocks[i]=(1, i, i**2, ..., i**(m-1)) for i in range(n) 
+    all computations are done modulo p
+    '''
+    building_blocks=[]
+    for a in range(1,n+1): 
+        row = []
+        elt = 1
+        for i in range(m): 
+            row.append(elt)
+            elt=(elt*a)%p
+        building_blocks.append(row)
+    return building_blocks
+    
 def elementary_symmetric_functions(m,L,p): 
     """
     Inputs: 
@@ -105,40 +121,35 @@ def elementary_symmetric_functions(m,L,p):
     L : a list of integers
     p : an integer, a prime number
     Output: 
-    A list `cache` where cache[i]=E(k,L,p)
-    where E(k,L,p) is the sum of all the products of k distincts elements in L, where all computations are done modulo p
+    a list el where el[i] is the sum of prod of i distinct elements L
+    where all computations are done modulo p
+    el has length m+1
     """
+    # Recusive relation: 
+    # Let el[i][j] = the sum of prod of i distinct elments in L[:j]
+    # then el[i][j]=el[i-1][j-1]*L[j]+el[i][j-1]
+    el = [[0]*(len(L)+1) for _ in range(m+1)]
+    for j in range(1,len(L)+1):
+        el[1][j]=el[1][j-1]+L[j-1]
     
-    # Recursive relation: 
-    # E(k,i) = E(k, L[:i+1], p)
-    # E(k,i) = E(k-1,i) + L[i]*E(k-1, i-1)
-    # E(1,i) = sum (L[:i+1])
+    for i in range(2,m+1): 
+        for j in range(i,len(L)+1): 
+            el[i][j]=el[i-1][j-1]*L[j-1]+el[i][j-1]
     
-    cache = [[0]*(len(L)+1) for _ in range(m+1)]
-    for col in range(1,len(L)+1):
-        cache[1][col]=cache[1][col-1]+L[col-1]
-    
-    
-    for row in range(2,m+1): 
-        for col in range(row,len(L)+1): 
-            cache[row][col]=cache[row-1][col-1]*L[col-1]+cache[row][col-1]
-    
-    return [cache[row][-1] for row in range(0,m+1) ]
-            
+    return [el[i][-1] for i in range(0,m+1) ]
+
 def vandermonde_inverse(vandermonde_basis,p): 
     '''
     Inputs: 
-    vandermonde_basis : a list of integers that formed the basis of the  vandermonde matrix
+    vandermonde_basis : a list of integers that formed the vandermonde matrix
     p : an integer, a prime number
     Output: 
     the inverse matrix of the vandermonde matrix (forms by vandermonde_basis), 
     where all computations are done modulo p
     '''
-    # Parts of the following code implements the algorithm presents in Man, Y.-K. (2018). On computing the inverse of Vandermonde matrix. Advances in Theoretical and Applied Mathematics, 13(1), 15-21.
-    
     m = len(vandermonde_basis)
     
-    # cache a dictionary for modulo inverse
+    # build a dictionary for modulo inverse
     inverses={}
     
     # build a list of elementary symmetric function
@@ -156,7 +167,7 @@ def vandermonde_inverse(vandermonde_basis,p):
         denominators.append(prod)
    
     # numerators for each row
-    # perform synthetic division 
+    # perform synthetic division
     numerators=[]
     for i in range(m): 
         row=[1]
@@ -180,3 +191,4 @@ def vandermonde_inverse(vandermonde_basis,p):
         row=list(map(lambda x: (x*inv)%p, numerators[i]))
         result.append(row)
     return transpose(result)
+    

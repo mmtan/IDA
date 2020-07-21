@@ -1,0 +1,57 @@
+Timer unit: 1e-06 s
+
+Total time: 11.7367 s
+File: <ipython-input-97-251b290b945c>
+Function: assemble at line 1
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+     1                                           def assemble(fragments_filenames, output_filename=None): 
+     2                                               '''
+     3                                               Input: 
+     4                                               fragments_filenames : a list of fragments filenames
+     5                                               output_filename: a String for the name of the file to write
+     6                                               Output: 
+     7                                               String represents the content of the original file
+     8                                               If filename is given, the content is written to the file
+     9                                               '''
+    10                                               
+    11         1    7086796.0 7086796.0     60.4      (m, n, p, fragments) = fragment_reader(fragments_filenames)
+    12         1          7.0      7.0      0.0      building_basis=[]
+    13         1          1.0      1.0      0.0      fragments_matrix=[]
+    14         6          3.0      0.5      0.0      for (idx,fragment) in fragments:
+    15         5          4.0      0.8      0.0          building_basis.append(idx)
+    16         5          4.0      0.8      0.0          fragments_matrix.append(fragment)
+    17                                               
+    18         1        343.0    343.0      0.0      inverse_building_matrix =  vandermonde_inverse(building_basis,p)
+    19                                               
+    20                                               # convert inverse_building_matrix and fragments_matrix to numpy array
+    21         1         60.0     60.0      0.0      inverse_building_matrix = np.array(inverse_building_matrix)
+    22         1     208619.0 208619.0      1.8      fragments_matrix=np.array(fragments_matrix)
+    23                                               
+    24         1      65706.0  65706.0      0.6      output_matrix = np.matmul(inverse_building_matrix, fragments_matrix)%p
+    25                                               
+    26                                               # each column of output matrix is a chunk of the original matrix
+    27         1          2.0      2.0      0.0      original_segments=[]
+    28         1          7.0      7.0      0.0      ncol = len(output_matrix[0])
+    29         1          1.0      1.0      0.0      nrow = len(output_matrix)
+    30    532484     340716.0      0.6      2.9      for c in range(ncol): 
+    31    532483    2814287.0      5.3     24.0          col = [output_matrix[r][c] for r in range(nrow)]
+    32    532483     386065.0      0.7      3.3          original_segments.append(col)
+    33                                               
+    34                                               # combine the original_segment into original_file
+    35         1          1.0      1.0      0.0      original_file=[]
+    36    532484     291305.0      0.5      2.5      for segment in original_segments: 
+    37    532483     350728.0      0.7      3.0          original_file.extend(segment)
+    38                                               
+    39                                               # convert original_file to its content
+    40         1     192042.0 192042.0      1.6      original_file_content = "".join(list(map(chr, original_file)))
+    41                                               
+    42         1          2.0      2.0      0.0      if output_filename:# write the output to file
+    43                                                   with open(output_filename,'wb') as fh:
+    44                                                       fh.write(bytes(original_file))
+    45                                               
+    46                                                   print("Generated file {}".format(output_filename))
+    47                                                   return 
+    48                                               else: 
+    49         1          0.0      0.0      0.0          return original_file_content
