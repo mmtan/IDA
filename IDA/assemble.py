@@ -1,5 +1,5 @@
 from IDA.tools import vandermonde_inverse, matrix_product
-from IDA.fragment_reader import fragment_reader
+from IDA.fragment_handler import fragment_reader
 import numpy as np
 import argparse
 
