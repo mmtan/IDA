@@ -36,7 +36,7 @@ def nextPrime(p):
         p+=2
     return p
 
-def inner_product_(a, b, p): 
+def inner_product(a, b, p): 
     """
     Inputs:
     a, b :  v ectors of equal length
