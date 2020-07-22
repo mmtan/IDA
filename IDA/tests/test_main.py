@@ -80,7 +80,7 @@ class IDATestCase(unittest.TestCase):
             else: 
                 test=original_file==output
         self.assertEqual(test,True)
-        
+        a
     
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(IDATestCase)
