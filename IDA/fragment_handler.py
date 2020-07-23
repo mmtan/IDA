@@ -1,7 +1,7 @@
 class ContentError(Exception): 
     pass
     
-def fragment_writer(filename, original_file, fragments):
+def fragment_writer(filename, n, m, p, original_file, fragments):
 
     # hash value of the original_file is used to check 
     # if the input "fragments_filenames" to the function "assemble" 

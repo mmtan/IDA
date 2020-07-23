@@ -1,5 +1,5 @@
 from IDA.tools import vandermonde_inverse, matrix_product
-from IDA.fragment_handler import fragment_reader
+from IDA.fragment_handler import fragment_reader, ContentError
 import numpy as np
 import argparse
 
@@ -31,6 +31,11 @@ def assemble(fragments_filenames, output_filename=None):
     for c in range(ncol): 
         col = [output_matrix[r][c] for r in range(nrow)]
         original_segments.append(col)
+        
+    # remove tailing zeros of the last segment
+    last_segment=original_segments[-1]
+    while last_segment[-1]==0: 
+        last_segment.pop()
     
     # combine the original_segment into original_file
     original_file=[]
@@ -54,4 +59,4 @@ if __name__ == "__main__":
     parser.add_argument("fragments_filenames", help="A list of fragments filenames.")
     parser.add_argument("output_filename", help="Name of the output file.", default=None)
     args = parser.parse_args()
-    main(args.fragments_filenames, args.output_filename)
+    assemble(args.fragments_filenames, args.output_filename)

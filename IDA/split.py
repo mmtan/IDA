@@ -11,7 +11,9 @@ def split(filename, n, m):
     Output:
     a list of n fragments (as Fragment objects)
     """
-
+    if n<0 or m<0: 
+        raise ValueError("numFragments ad numToAssemble must be positive.")
+    
     if m>n: 
         raise ValueError("numToAssemble must be less than numFragments")
     
@@ -43,7 +45,7 @@ def split(filename, n, m):
             fragment.append(inner_product(building_blocks[i], original_segments[k],p))
         fragments.append(fragment)
     
-    return fragment_writer(filename, original_file, fragments)
+    return fragment_writer(filename, n, m, p, original_file, fragments)
     
 
 if __name__ == "__main__":
@@ -52,4 +54,4 @@ if __name__ == "__main__":
     parser.add_argument("numFragments", help = "Number of fragments after splitting the original file.")
     parser.add_argument("numToAssemble", help = "Minimum number of fragments required to assemble/restore the original file. ")
     args = parser.parse_args()
-    main(args.filename, args.numFragments, args.numToAssemble)
+    split(args.filename, args.numFragments, args.numToAssemble)
