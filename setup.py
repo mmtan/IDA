@@ -13,6 +13,8 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url = "https://github.com/mmtan/IDA",
     packages=setuptools.find_packages(),
+    entry_points ={ 'console_scripts': [ 'IDAsplit = IDA.split:main',
+    'IDAassemble = IDA.assemble:main']},
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

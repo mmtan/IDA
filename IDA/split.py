@@ -47,8 +47,7 @@ def split(filename, n, m):
     
     return fragment_writer(filename, n, m, p, original_file, fragments)
     
-
-if __name__ == "__main__":
+def main(): 
     parser = argparse.ArgumentParser(description="Split the file.")
     parser.add_argument("filename", metavar = "filename", type = str, help="The file name.")
     parser.add_argument("n", metavar = "numFragments", type = int, help = "Number of fragments after splitting the original file.")
@@ -56,3 +55,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
     fragments=split(args.filename, args.n, args.m)
     print(fragments)
+
+if __name__ == "__main__":
+    main()

@@ -54,9 +54,7 @@ def assemble(fragments_filenames, output_filename=None):
     else: 
         return original_file_content
         
-
-        
-if __name__ == "__main__":
+def main(): 
     parser = argparse.ArgumentParser(description="Assemble the files")
     parser.add_argument("fragment_filenames", nargs = '*',  
                      help = "Filenames of fragments, separated by space.")
@@ -68,3 +66,6 @@ if __name__ == "__main__":
         output = assemble(args.fragment_filenames, args.write)
         if not args.write: 
             print(output)
+        
+if __name__ == "__main__":
+    main()
