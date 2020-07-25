@@ -31,7 +31,7 @@ def assemble(fragments_filenames, output_filename=None):
     for c in range(ncol): 
         col = [output_matrix[r][c] for r in range(nrow)]
         original_segments.append(col)
-        
+    
     # remove tailing zeros of the last segment
     last_segment=original_segments[-1]
     while last_segment[-1]==0: 
@@ -41,7 +41,7 @@ def assemble(fragments_filenames, output_filename=None):
     original_file=[]
     for segment in original_segments: 
         original_file.extend(segment)
-    
+
     # convert original_file to its content
     original_file_content = "".join(list(map(chr, original_file)))
     
@@ -54,9 +54,17 @@ def assemble(fragments_filenames, output_filename=None):
     else: 
         return original_file_content
         
+
+        
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Assemble the files")
-    parser.add_argument("fragments_filenames", help="A list of fragments filenames.")
-    parser.add_argument("output_filename", help="Name of the output file.", default=None)
+    parser.add_argument("fragment_filenames", nargs = '*',  
+                     help = "Filenames of fragments, separated by space.")
+    parser.add_argument("-w", "--write", type = str, 
+                        metavar = "output_filename", default = None, 
+                        help = "Name of the output file.") 
     args = parser.parse_args()
-    assemble(args.fragments_filenames, args.output_filename)
+    if len(args.fragment_filenames)>0:
+        output = assemble(args.fragment_filenames, args.write)
+        if not args.write: 
+            print(output)

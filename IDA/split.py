@@ -49,9 +49,10 @@ def split(filename, n, m):
     
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Split the file")
-    parser.add_argument("filename", help="The file name.")
-    parser.add_argument("numFragments", help = "Number of fragments after splitting the original file.")
-    parser.add_argument("numToAssemble", help = "Minimum number of fragments required to assemble/restore the original file. ")
+    parser = argparse.ArgumentParser(description="Split the file.")
+    parser.add_argument("filename", metavar = "filename", type = str, help="The file name.")
+    parser.add_argument("n", metavar = "numFragments", type = int, help = "Number of fragments after splitting the original file.")
+    parser.add_argument("m", metavar = "numToAssemble", type = int, help = "Minimum number of fragments required to assemble/restore the original file. ")
     args = parser.parse_args()
-    split(args.filename, args.numFragments, args.numToAssemble)
+    fragments=split(args.filename, args.n, args.m)
+    print(fragments)

@@ -1,3 +1,5 @@
+import hashlib
+
 class ContentError(Exception): 
     pass
     
@@ -6,7 +8,7 @@ def fragment_writer(filename, n, m, p, original_file, fragments):
     # hash value of the original_file is used to check 
     # if the input "fragments_filenames" to the function "assemble" 
     # are derived from the same file
-    original_file_hash = hash(original_file)
+    original_file_hash = hashlib.sha224(original_file).digest()
     
     # write fragments to files  
     # fragment i is written to the file <original_filename><original_file_hash>_i
@@ -19,14 +21,16 @@ def fragment_writer(filename, n, m, p, original_file, fragments):
         fragment_filehandle = open(fragment_filename,'w')
         fragment_filehandles[idx]=fragment_filehandle
         fragment_content = str(fragments[idx])
-        # compute the hash of hash(hash(fragment_content)+hash(original_file)) for error detection
-        fragment_hash = hash(hash(fragment_content)+original_file_hash)
+        # compute the hash of fragment_content for error detection
+        fragment_hash =  hashlib.sha224(bytes(fragment_content,encoding='utf8')).digest()
         # write identifiers for each file (idx,m,n,p,original_file_hash)
-        fragment_filehandle.write("{} {} {} {} {} {}\n".format(idx, m, n, p,original_file_hash, fragment_hash))
+        fragment_filehandle.write("{} {} {} {}\n".format(idx, m, n, p))
+        fragment_filehandle.write("{}\n".format(original_file_hash))
+        fragment_filehandle.write("{}\n".format(fragment_hash))
         fragment_filehandle.write(fragment_content)
         fragment_filehandle.close()
     return fragment_filenames
-    
+
 def fragment_reader(filenames): 
     """
     Inputs: 
@@ -43,7 +47,8 @@ def fragment_reader(filenames):
     # the rest of the fragments should have the same values for these parameters
     filename=filenames[0]
     with open(filename,'r') as fh:
-        idx, m_, n_, p_, original_file_hash_, hashid_= map(eval,fh.readline().split(" "))
+        idx, m_, n_, p_= map(eval,fh.readline().split(" "))
+        original_file_hash_=eval(fh.readline())
 
     # there should be at least m_ fragments
     if len(filenames)<m_:
@@ -56,8 +61,9 @@ def fragment_reader(filenames):
         if count<m_:
             with open(filename,'r') as fh:
                 
-                idx, m, n, p, original_file_hash, hashid =map(eval,fh.readline().split(" "))
-                
+                idx, m, n, p=map(eval,fh.readline().split(" "))
+                original_file_hash=eval(fh.readline())
+                fragment_hash =eval(fh.readline())
                 # if idx is already in indices, skip this file
                 if idx in indices: 
                     continue
@@ -67,13 +73,12 @@ def fragment_reader(filenames):
                 # check if the fragments have the same values of the parameters m, n, p, original_file_hash
                 if (m,n,p,original_file_hash)!=(m_, n_,p_, original_file_hash_):
                     raise ValueError("These fragments are not derived from the same file.")
-                content = fh.read()
-
+                fragment_content = fh.read()
                 # check if the file content is corrupted
-                if hash(hash(content)+original_file_hash)!=hashid:
+                if hashlib.sha224(bytes(fragment_content,encoding='utf8')).digest()!=fragment_hash:
                     raise ContentError("The content of {} has been compromised.".format(filename))
 
-            fragments.append((idx+1,eval(content)))
+            fragments.append((idx+1,eval(fragment_content)))
             count+=1
         else: 
             break
@@ -81,3 +86,4 @@ def fragment_reader(filenames):
         raise ValueError("There are duplicate fragments. The total number of different fragments are insufficient to assemble the file.")
     
     return (m_, n_, p_, fragments)
+    
