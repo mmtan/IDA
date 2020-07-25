@@ -15,8 +15,8 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install IDA.
 pip install IDA-pkg
 ```
 
-## Issues
-* Warning: currently only works with small files!
+<!-- ## Issues -->
+<!-- * Warning: currently only works with small files! -->
 
 ## Examples
 The following is a simple example. That is, we split a file into 10 fragments such that any 5 of them are sufficient to recover the original data. 
@@ -26,7 +26,7 @@ import IDA
 IDA.split("test.txt", 10, 5) 
 ```
 
-Alternatively, we can use the following command line. 
+Alternatively, we can execute the command in the command line interface as follows. 
 
 ```
 IDAsplit "test.txt" 10 5
@@ -53,7 +53,8 @@ You can also write the output to a file.
 IDA.assemble(["test_fragment0", "test_fragment1", "test_fragment2", "test_fragment3", "test_fragment4"], "output.txt") 
 ```
 
-Alternatively, we can use the following command lines. 
+Alternatively, we can execute the command in the command line interface as follows. 
+
 ```
 IDAassemble "test_fragment0" "test_fragment1" "test_fragment2" "test_fragment3" "test_fragment4"
 ```
@@ -63,8 +64,10 @@ IDAassemble "test_fragment0" "test_fragment1" "test_fragment2" "test_fragment3" 
 ```
 
 ## Supported features
-* Detect if a fragment file is compromised before assembling. 
 * Detect if all the fragment files for assembling are derived from the same original file. 
+* Detect if a fragment file is corrupted before assembling. 
+  - Error detection is realized by adding the output of the application of hash function SHA-224 on the content of the file ( such output is called message digest) to the file. The hash value of the content of the file is recomputed in the IDA.assemble function and is compared with the message digest tagged in the file. Error detection using SHA-224 provides 112 bits of security againts collision attacks. 
+
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

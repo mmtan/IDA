@@ -4,6 +4,4 @@ TODO
 * Encrypt fragments for secret sharing. 
 
 ## Changes
-* command-line
-* hashlib
 * performance measure
