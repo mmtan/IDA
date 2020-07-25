@@ -1,6 +1,6 @@
 # IDA
 
-This is a library that implements the Information Dispersal Algorithm (IDA) introduced in [1].
+This library implements the Information Dispersal Algorithm (IDA) introduced in [1].
 IDA breaks up a file of size N into n fragments, each of size N/m such that the original file can be recovered from any m of these fragments.
 Note that after IDA splits the file, the total size of all the fragments is(n/m)N. 
 The parameters n and m can be chosen such that their ratio is close to 1, and hence, the total size of all the fragments after splitting the original file is close to the size of the original file, making IDA space-efficient. 
