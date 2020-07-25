@@ -34,10 +34,15 @@ IDAsplit "test.txt" 10 5
 
 The following ten files (call fragments) will be generated: 
 "test_fragment0"
+
 "test_fragment1"
+
 "test_fragment2"
+
 "test_fragment3"
+
 ...
+
 "test_fragment9"
 
 To reassemble the file "test.txt", we take any 5 of the fragments, e.g., we take the first five fragments, then the following will return the content of the original file as a string. 
@@ -47,13 +52,13 @@ import IDA
 IDA.assemble(["test_fragment0", "test_fragment1", "test_fragment2", "test_fragment3", "test_fragment4"]) 
 ```
 
-You can also write the output to a file. 
+You can also write the output to a file, e.g., "output.txt" .
 
 ```python
 IDA.assemble(["test_fragment0", "test_fragment1", "test_fragment2", "test_fragment3", "test_fragment4"], "output.txt") 
 ```
 
-Alternatively, we can execute the command in the command line interface as follows. 
+Alternatively, we can execute the commands in the command line interface as follows. 
 
 ```
 IDAassemble "test_fragment0" "test_fragment1" "test_fragment2" "test_fragment3" "test_fragment4"
