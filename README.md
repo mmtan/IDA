@@ -23,21 +23,48 @@ The following is a simple example. That is, we split a file into 10 fragments su
 
 ```python
 import IDA
-fragments = IDA.split("test.txt", 10, 5) 
+IDA.split("test.txt", 10, 5) 
 ```
 
-To reassemble the file, we take any 5 of the fragments, e.g., we take the first five fragments, then the following will return the content of the original file as a string. 
+Alternatively, we can use the following command line. 
+
+```
+IDAsplit "test.txt" 10 5
+```
+
+The following ten files (call fragments) will be generated: 
+"test_fragment0"
+"test_fragment1"
+"test_fragment2"
+"test_fragment3"
+...
+"test_fragment9"
+
+To reassemble the file "test.txt", we take any 5 of the fragments, e.g., we take the first five fragments, then the following will return the content of the original file as a string. 
 
 ```python
 import IDA
-IDA.assemble(fragments[:5]) 
+IDA.assemble(["test_fragment0", "test_fragment1", "test_fragment2", "test_fragment3", "test_fragment4"]) 
 ```
 
 You can also write the output to a file. 
 
 ```python
-IDA.assemble(fragments[:5], "output.txt") 
+IDA.assemble(["test_fragment0", "test_fragment1", "test_fragment2", "test_fragment3", "test_fragment4"], "output.txt") 
 ```
+
+Alternatively, we can use the following command lines. 
+```
+IDAassemble "test_fragment0" "test_fragment1" "test_fragment2" "test_fragment3" "test_fragment4"
+```
+
+```
+IDAassemble "test_fragment0" "test_fragment1" "test_fragment2" "test_fragment3" "test_fragment4" -write "output.txt"
+```
+
+## Supported features
+* Detect if a fragment file is compromised before assembling. 
+* Detect if all the fragment files for assembling are derived from the same original file. 
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
